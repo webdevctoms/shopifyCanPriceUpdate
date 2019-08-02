@@ -6,8 +6,9 @@ const {ReadCSV} = require('../classes/readCSV');
 
 //initial test to see how it reads csv
 router.get('/',checkKey,(req,res)=>{
+	const fileName = req.query.file;
 	const readCSV = new ReadCSV();
-	return readCSV.readFile()
+	return readCSV.readFile(fileName)
 
 	.then(data => {
 		res.json({

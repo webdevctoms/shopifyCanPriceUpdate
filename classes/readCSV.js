@@ -31,9 +31,9 @@ ReadCSV.prototype.addBlank = function(newLineArr){
 	}
 };
 
-ReadCSV.prototype.readFile = function() {
+ReadCSV.prototype.readFile = function(fileName) {
 	let promise = new Promise((resolve,reject) => {
-		this.fs.readFile('./data/prices.csv','utf-8',function(err,data){
+		this.fs.readFile('./data/' + fileName + '.csv','utf-8',function(err,data){
 			try{
 				if(err){
 					reject(err);
