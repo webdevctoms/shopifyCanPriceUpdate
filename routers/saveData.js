@@ -15,6 +15,9 @@ router.post('/copy',checkKey,checkFields,(req,res)=>{
 	return getData.getData([],1)
 
 	.then(data => {
+		const halfIndex = Math.round(data.length / 2);
+		const halfData1 = data.slice(0,halfIndex);
+		const halfData2 = data.slice(halfIndex,data.length);
 		const modelMap = {
 			product_id:'id',
 			product_title:'title',
@@ -24,9 +27,10 @@ router.post('/copy',checkKey,checkFields,(req,res)=>{
 				item_code:'sku'
 			}
 		};
-		const saveDB = new SaveDB(data,Prices,modelMap);
+		const saveDB = new SaveDB(halfData1,Prices,modelMap);
+		const saveDB2 = new SaveDB(halfData2,Prices,modelMap);
 		console.log('===========data length',data.length);
-		return saveDB.save(0)
+		return Promise.all([saveDB.save(0),saveDB2.save(0)])
 	})
 
 	.then(data => {
