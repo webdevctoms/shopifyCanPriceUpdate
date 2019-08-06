@@ -1,16 +1,19 @@
 const express = require("express");
 const router = express.Router();
 const {checkKey} = require("../tools/checkKey");
-const {URLCAD,URLUS,USERKC,USERPC,USERK,USERP} = require('../config');
-const {ReadCSV} = require('../classes/readCSV');
+const {checkFields} = require("../tools/checkFields");
+const {URLCAD,USERKC,USERPC} = require('../config');
+const {GetData} = require('../classes/getData');
 
 //copy data to db
-router.get('/copy',checkKey,(req,res)=>{
-	const fileName = req.query.file;
-	const readCSV = new ReadCSV();
-	return readCSV.readFile(fileName)
+router.post('/copy',checkKey,checkFields,(req,res)=>{
+	const fields = req.body.fields;
+	const newUrl = req.newUrl;
+	const getData = new GetData(newUrl,USERKC,USERPC,fields);
+	return getData.getData([],1)
 
 	.then(data => {
+		console.log('===========data length',data.length);
 		res.json({
 			status:200,
 			data

@@ -18,7 +18,7 @@ ReadCSV.prototype.compareFilter = function(options,data){
 				columns.push(i);
 			}
 		}
-		console.log(columns);
+		//console.log(columns);
 		for(let i = 1;i < data.length;i++){
 			let columnCount = 0;
 			for(let k = 0;k < columns.length;k++){
