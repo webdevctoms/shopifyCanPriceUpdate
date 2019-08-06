@@ -18,10 +18,12 @@ router.post('/copy',checkKey,checkFields,(req,res)=>{
 		const halfIndex = Math.round(data.length / 2);
 		const halfData1 = data.slice(0,halfIndex);
 		const halfData2 = data.slice(halfIndex,data.length);
+		//could possibly pass this as a argument in post request
 		const modelMap = {
 			product_id:'id',
 			product_title:'title',
-			variant_data:{
+			variants:{
+				model_title:'variant_data',
 				variant_id:'id',
 				variant_price:'price',
 				item_code:'sku'

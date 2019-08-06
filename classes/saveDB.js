@@ -6,38 +6,39 @@ function SaveDB(productData,model,modelMap){
 	this.modelMap = modelMap;
 }
 
-SaveDB.prototype.getVariantData = function(variants,variantMap) {
-	let variantData = [];
-	let modelKeys = Object.keys(variantMap);
+SaveDB.prototype.getArrayData = function(arrayData,arrayMap) {
+	let newArrayData = [];
+	let modelKeys = Object.keys(arrayMap);
 
-	for(let i = 0;i < variants.length;i++){
+	for(let i = 0;i < arrayData.length;i++){
 		let singleVariant = {};
 		for(let k = 0;k < modelKeys.length;k++){
 			let currentKey = modelKeys[k];
-			singleVariant[currentKey] = variants[i][variantMap[currentKey]];
+			if(arrayData[i][arrayMap[currentKey]]){
+				singleVariant[currentKey] = arrayData[i][arrayMap[currentKey]];
+			}
 		}
-		variantData.push(singleVariant);
+		newArrayData.push(singleVariant);
 	}
 
-	return variantData;
+	return newArrayData;
 };
 
 SaveDB.prototype.createData = function(product) {
 	let createObj = {};
 	let modelKeys = Object.keys(this.modelMap);
-
+	//console.log(modelKeys);
 	for(let i = 0;i < modelKeys.length;i++){
 		let currentKey = modelKeys[i];
 		//get the model key and set the correct product data to the model key
 		//because i am dynamically creating create object need a way to check for variants
-		if(currentKey.includes('variant') || this.modelMap[currentKey].includes('variant')){
+		if(typeof this.modelMap[currentKey] === 'object' && this.modelMap[currentKey] !== null){
 			//pass the variant map within the model map
-			createObj[currentKey] = this.getVariantData(product.variants,this.modelMap[currentKey]);
+			createObj[this.modelMap[currentKey].model_title] = this.getArrayData(product[currentKey],this.modelMap[currentKey]);
 		}
 		else{
 			createObj[currentKey] = product[this.modelMap[currentKey]];
 		}
-		
 	}
 	//console.log('==========create object: ',createObj);
 	return this.model.create(createObj)
