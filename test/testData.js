@@ -3,9 +3,10 @@ const mongoose = require('mongoose');
 const expect = chai.expect;
 const {app, runServer, closeServer} = require('../server');
 const {GetData} = require('../classes/getData');
-//const {compareMetafields} = require('./compareMetafields');
+const {CompareData} = require('./compareData');
+const {Prices} = require('../models/priceModel');
 const {DATABASE_URL,URLCAD,USERKC,USERPC} = require('../config');
-
+//do tests linear way ie no promise.all to make sure that no data is missed from the router
 describe('Test product data',function(){
 	before(function(){
 		return runServer(DATABASE_URL);
@@ -34,8 +35,8 @@ describe('Test product data',function(){
 
 			.then(productData => {
 				console.log('================Product Data Length: ',productData.length);
-
-				return Promise.all([getMeta1.getMetafields([],0),getMeta2.getMetafields([],0)])
+				const compareData = new CompareData(Prices,'product_id');
+				return compareData.compare(productData,0,[])
 			})
 
 			.then(results => {
