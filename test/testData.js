@@ -35,7 +35,17 @@ describe('Test product data',function(){
 
 			.then(productData => {
 				console.log('================Product Data Length: ',productData.length);
-				const compareData = new CompareData(Prices,'product_id');
+				const modelMap = {
+					product_id:'id',
+					product_title:'title',
+					variants:{
+						model_title:'variant_data',
+						variant_id:'id',
+						variant_price:'price',
+						item_code:'sku'
+					}
+				};
+				const compareData = new CompareData(Prices,'product_id',modelMap);
 				return compareData.compare(productData,0,[])
 			})
 
