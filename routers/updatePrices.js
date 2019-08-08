@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const {checkKey} = require("../tools/checkKey");
 const {checkFields} = require("../tools/checkFields");
+const {compareCSVData} = require("../tools/compareCSVData");
 const {URLCAD,URLUS,USERKC,USERPC,USERK,USERP} = require('../config');
 const {ReadCSV} = require('../classes/readCSV');
 const {GetData} = require('../classes/getData');
@@ -10,7 +11,8 @@ const {GetData} = require('../classes/getData');
 router.post('/',checkKey,checkFields,(req,res)=>{
 	let filteredData;
 	let productsSorted;
-	let products
+	let products;
+	let updatePriceArray;
 	const fields = req.body.fields;
 	const newUrl = req.newUrl;
 	const fileName = req.query.file;
@@ -35,13 +37,13 @@ router.post('/',checkKey,checkFields,(req,res)=>{
 		console.log('filtered data length: ',filteredData.length);
 		filteredData = readCSV.sortData(filteredData,0);
 		productsSorted = getData.sortData(products,'variants','sku');
+		updatePriceArray = compareCSVData(filteredData,productsSorted,0,6,'variants'); 
+
 		res.json({
 			status:200,
-			data:filteredData
+			data:updatePriceArray
 		});
 	})
-
-	//
 
 	.catch(err => {
 		console.log('error reading csv',err);
