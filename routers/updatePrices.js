@@ -1,22 +1,30 @@
 const express = require("express");
 const router = express.Router();
 const {checkKey} = require("../tools/checkKey");
+const {checkFields} = require("../tools/checkFields");
 const {URLCAD,URLUS,USERKC,USERPC,USERK,USERP} = require('../config');
 const {ReadCSV} = require('../classes/readCSV');
+const {GetData} = require('../classes/getData');
 
 //initial test to see how it reads csv
-router.post('/',checkKey,(req,res)=>{
+router.post('/',checkKey,checkFields,(req,res)=>{
+
+	const fields = req.body.fields;
+	const newUrl = req.newUrl;
 	const fileName = req.query.file;
-	const options = req.body.options
-	//const filter = req.query.filter;
-	console.log(options);
-	//const columnData = JSON.parse(req.query.columnData);
+	const options = req.body.options;
 	const readCSV = new ReadCSV();
-	return readCSV.readFile(fileName)
+	const getData = new GetData(newUrl,USERKC,USERPC,fields);
+	return getData.getData([],1)
+
+	.then(productData => {
+		console.log('product data length: ',productData.length);
+		console.log(options);
+		return readCSV.readFile(fileName)
+	})
 
 	.then(data => {
 		let filteredData = data;
-		
 		if(options){
 			filteredData = readCSV.filterArray(options,data)
 		}
