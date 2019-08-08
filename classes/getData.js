@@ -88,5 +88,32 @@ GetData.prototype.getData = function(dataArray,page,url) {
 
 	return promise;
 };
+//meant for sorting by variant
+GetData.prototype.sortData = function(arr,key1,key2){
+	return arr.sort((a,b) => {
+		a[key1].sort((variant1,variant2) => {
+			if(variant1[key2] < variant2[key2]){
+				return -1;
+			}
+			else{
+				return 1;
+			}
+		});
+		b[key1].sort((variant1,variant2) => {
+			if(variant1[key2] < variant2[key2]){
+				return -1;
+			}
+			else{
+				return 1;
+			}
+		});
+		if(a[key1][0][key2] < b[key1][0][key2]){
+			return -1;
+		} 	
+		else{
+			return 1;
+		}
+	});
+};
 
 module.exports = {GetData};

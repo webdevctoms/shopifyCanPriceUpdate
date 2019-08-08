@@ -126,5 +126,17 @@ ReadCSV.prototype.readFile = function(fileName) {
 
 	return promise;
 };
+//assume sorting csv array
+ReadCSV.prototype.sortData = function(arr,index){
+	return arr.sort((a,b) => {
+		//a should come before b that is why return -1
+		if(a[index] < b[index]){
+			return -1;
+		}
+		else{
+			return 1;
+		}
+	});
+};
 
 module.exports = {ReadCSV};
