@@ -3,14 +3,14 @@ const mongoose = require('mongoose');
 const variantSchema = mongoose.Schema({
 	variant_id:{type:String,required:true},
 	variant_price:String,
-	item_code:{type:String},
+	item_code:{type:String,default:""}
 },{_id:false});
 //main shcema
 const priceSchema = mongoose.Schema({
 	product_id:{type:String,required:true,unique:true},
 	product_title:{type:String},
 	variant_data:[variantSchema]
-});
+},{minimize:false});
 
 priceSchema.methods.serialize = function(){
 	return{

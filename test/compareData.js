@@ -32,7 +32,8 @@ CompareData.prototype.compareInnerObject = function(shopifyData,productData,arra
 				if(productData[i][currentKey] != shopifyData[i][shopifyKey]){
 					console.log('===================found error=====================',productData[i][currentKey],shopifyData[i][shopifyKey],i,shopifyData[i]);
 					errorData[currentKey] = {
-						item_code:productData[i].item_code
+						item_code:productData[i].item_code,
+						id:shopifyData[i].product_id
 					};
 				}
 			}
