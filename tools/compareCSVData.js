@@ -68,6 +68,30 @@ function compareCSVData(csvArr,productArr,compareIndex,priceIndex,compareKey){
 	let foundVariants = 0;
 	let lastIndex = 0;
 	for(let i = 0;i < csvArr.length;i++){
+		let csvItemCode = csvArr[i][compareIndex].replace(',','');
+		let csvPrice = convertPrice(csvArr[i][priceIndex]);	
+		for(let k = 0;k < productArr.length;k++){
+			for(let v = 0;v < productArr[k][compareKey].length;v++){
+				let productItemCode = productArr[k][compareKey][v].sku;
+				let variantPrice = productArr[k][compareKey][v].price;
+				if(csvItemCode === productItemCode){
+					//console.log(csvPrice,variantPrice,csvItemCode,productItemCode);
+					if(csvPrice !== variantPrice){
+						console.log('=========================price no match===========================: ',csvPrice,csvItemCode);
+						priceData.push({
+							csvItemCode,
+							productItemCode,
+							csvPrice,
+							variantPrice
+						});
+					}
+
+					console.log('======================found variant===============: ',csvItemCode,productItemCode);
+					break;
+				}
+			}
+		}
+		/*
 		if(productIndex >= productArr.length - 1){
 			productIndex = productArr.length - 1;
 		}
@@ -94,11 +118,6 @@ function compareCSVData(csvArr,productArr,compareIndex,priceIndex,compareKey){
 		//console.log(i,productIndex,csvArr[i][compareIndex].replace(',',''),currentVariant[0].sku);
 		//console.log('variant outside function: ',foundVariants,variantLength);
 		foundVariants = checkVariant(currentVariant,csvArr,i,compareIndex,priceData,foundVariants,variantLength,productIndex,priceIndex);	
-		/*
-		if(productIndex === productArr.length - 1){
-			break;
-		}
-		*/
 		if(foundVariants === variantLength){
 			//console.log('variant finished: ',foundVariants,variantLength);
 			productIndex++;
@@ -112,6 +131,7 @@ function compareCSVData(csvArr,productArr,compareIndex,priceIndex,compareKey){
 			productIndex++;
 			lastIndex = i;
 		}
+		*/
 	}
 
 	return priceData;
