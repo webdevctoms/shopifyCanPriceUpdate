@@ -79,8 +79,8 @@ function compareCSVData(csvArr,productArr,compareIndex,priceIndex,compareKey){
 		let indexDiff = i - lastIndex;
 		//check to used to see if next cav item is the last variant
 		if(!(csvItemCode < productItemCode) && csvItemCode !== productItemCode && variantDiff !== 1 && indexDiff !== 0){
-			console.log('==========skiping product diff==============',productItemCode);
-			console.log('==========csvItemCode diff==============',csvItemCode);
+			//console.log('==========skiping product diff==============',productItemCode);
+			//console.log('==========csvItemCode diff==============',csvItemCode);
 			foundVariants = 0;
 			productIndex++;
 			lastIndex = i;
@@ -91,8 +91,8 @@ function compareCSVData(csvArr,productArr,compareIndex,priceIndex,compareKey){
 		csvItemCode = csvArr[i][compareIndex].replace(',','');
 		productItemCode = productArr[productIndex][compareKey][0].sku;
 		currentVariant = productArr[productIndex][compareKey];
-		console.log(i,productIndex,csvArr[i][compareIndex].replace(',',''),currentVariant[0].sku);
-		console.log('variant outside function: ',foundVariants,variantLength);
+		//console.log(i,productIndex,csvArr[i][compareIndex].replace(',',''),currentVariant[0].sku);
+		//console.log('variant outside function: ',foundVariants,variantLength);
 		foundVariants = checkVariant(currentVariant,csvArr,i,compareIndex,priceData,foundVariants,variantLength,productIndex,priceIndex);	
 		/*
 		if(productIndex === productArr.length - 1){
@@ -100,14 +100,14 @@ function compareCSVData(csvArr,productArr,compareIndex,priceIndex,compareKey){
 		}
 		*/
 		if(foundVariants === variantLength){
-			console.log('variant finished: ',foundVariants,variantLength);
+			//console.log('variant finished: ',foundVariants,variantLength);
 			productIndex++;
 			foundVariants = 0;
 			lastIndex = i;
 		}
 		if(!(csvItemCode < productItemCode) && csvItemCode !== productItemCode){
-			console.log('==========skiping product==============',productItemCode);
-			console.log('==========csvItemCode==============',csvItemCode);
+			//console.log('==========skiping product==============',productItemCode);
+			//console.log('==========csvItemCode==============',csvItemCode);
 			foundVariants = 0;
 			productIndex++;
 			lastIndex = i;

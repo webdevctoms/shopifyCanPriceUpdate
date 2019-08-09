@@ -33,12 +33,12 @@ router.post('/',checkKey,checkFields,(req,res)=>{
 		if(options){
 			filteredData = readCSV.filterArray(options,data)
 		}
-		
+		console.time('compareCSVData');
 		console.log('filtered data length: ',filteredData.length);
 		filteredData = readCSV.sortData(filteredData,0);
 		productsSorted = getData.sortData(products,'variants','sku');
 		updatePriceArray = compareCSVData(filteredData,productsSorted,0,6,'variants'); 
-
+		console.timeEnd('compareCSVData');
 		res.json({
 			status:200,
 			data:updatePriceArray
