@@ -6,6 +6,17 @@ const {compareCSVData} = require("../tools/compareCSVData");
 const {URLCAD,URLUS,USERKC,USERPC,USERK,USERP} = require('../config');
 const {ReadCSV} = require('../classes/readCSV');
 const {GetData} = require('../classes/getData');
+/*
+{	"fields":["id","title","variants"],
+	"options":{
+		"type":"compare",
+		"columnData":{
+			"Currency":["CAN"],
+			"Price Level":["Online Price"]
+		}
+	}
+}
+*/
 
 //initial test to see how it reads csv
 router.post('/',checkKey,checkFields,(req,res)=>{

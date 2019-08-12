@@ -33,7 +33,7 @@ CompareData.prototype.compareInnerObject = function(shopifyData,productData,arra
 					console.log('===================found error=====================',productData[i][currentKey],shopifyData[i][shopifyKey],i,shopifyData[i]);
 					errorData[currentKey] = {
 						item_code:productData[i].item_code,
-						id:shopifyData[i].product_id
+						product_id:shopifyData[i].product_id
 					};
 				}
 			}
@@ -62,7 +62,7 @@ CompareData.prototype.compareProducts = function(shopifyProduct,product) {
 		else if(product[currentKey] != shopifyProduct[shopifyKey]){
 			errorObject[currentKey] = {
 				title:product.product_title,
-				id:product.product_id
+				product_id:product.product_id
 			};
 		}
 	}
