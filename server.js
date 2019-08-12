@@ -6,9 +6,12 @@ const bodyParser = require("body-parser");
 const jsonParser = bodyParser.json();
 const {router:updateRouter} = require('./routers/updatePrices');
 const {router:saveRouter} = require('./routers/saveData');
+const {router:emailRouter} = require('./routers/testEmail');
 const app = express();
+
 app.use(jsonParser);
 app.use('/update',updateRouter);
+app.use('/email',emailRouter);
 app.use('/save',saveRouter);
 
 let server;
