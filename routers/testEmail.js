@@ -2,12 +2,12 @@ const express = require("express");
 const router = express.Router();
 const {checkKey} = require("../tools/checkKey");
 const {SendMail} = require('../classes/sendMail');
-const {EMAIL,EP} = require('../config');
+const {EMAIL,EP,SENDEMAIL} = require('../config');
 
 router.get('/',checkKey,(req,res) => {
 	const email = new SendMail(EMAIL,EP);
 
-	return email.send('test@email.com','WebDev@ctoms.ca','test','<b>test message</b>')
+	return email.send('test@email.com',SENDEMAIL,'test','<b>test message</b>')
 
 	.then( data=>{
 		return res.json({

@@ -6,3 +6,4 @@ exports.USERPC = process.env.USERPC;
 exports.DATABASE_URL = process.env.DATABASE_URL;
 exports.EMAIL=process.env.EMAIL;
 exports.EP=process.env.EP;
+exports.SENDEMAIL=process.env.SENDEMAIL;

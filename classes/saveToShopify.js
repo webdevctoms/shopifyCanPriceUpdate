@@ -33,7 +33,8 @@ SaveToShopify.prototype.saveData = function(productIndex) {
 			}
 			//console.log(body);
 			//let parsedBody = JSON.parse(body);
-			console.log("===============PUT data: ",productIndex,this.productData.length,this.productData[productIndex].product_title);
+			let title = this.productData[productIndex].product_title ? this.productData[productIndex].product_title : this.productData[productIndex].title;
+			console.log("===============PUT data: ",productIndex,this.productData.length,title);
 			if(productIndex < this.productData.length - 1){
 				resolve(this.saveData(productIndex + 1));
 			}

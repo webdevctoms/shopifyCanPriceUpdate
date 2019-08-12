@@ -3,9 +3,10 @@ const mongoose = require('mongoose');
 const expect = chai.expect;
 const {app, runServer, closeServer} = require('../server');
 const {GetData} = require('../classes/getData');
+const {SendMail} = require('../classes/sendMail');
 const {CompareData,logErrors} = require('./testConfig');
 const {Prices} = require('../models/priceModel');
-const {DATABASE_URL,URLCAD,USERKC,USERPC} = require('../config');
+const {DATABASE_URL,URLCAD,USERKC,USERPC,EMAIL,EP,SENDEMAIL} = require('../config');
 //do tests linear way ie no promise.all to make sure that no data is missed from the router
 describe('Test product data',function(){
 	before(function(){
@@ -53,6 +54,13 @@ describe('Test product data',function(){
 				console.log("=========================results from compare prices: ",results, results.length);
 				logErrors(results);
 				expect(results).to.have.lengthOf(0);
+				const email = new SendMail(EMAIL,EP);
+
+				return email.send('test@email.com',SENDEMAIL,'Done Testing','<b>Done testing copy data to Shopify</b>')
+			})
+
+			.then(() => {
+				console.log('email sent done testing');
 			})
 
 			.catch(err => {
