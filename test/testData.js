@@ -25,7 +25,7 @@ describe('Test product data',function(){
 			expect(1+1).to.equal(2);
 			done();
 		});
-
+		//to continue using this test will need to sort data
 		it('should have matching data',function(){
 			this.timeout(900000);
 			const fields = ['id','title','variants'];
@@ -51,7 +51,7 @@ describe('Test product data',function(){
 			})
 
 			.then(results => {
-				console.log("=========================results from compare prices: ",results, results.length);
+				console.log("=========================results from compare prices: ", results.length);
 				logErrors(results);
 				expect(results).to.have.lengthOf(0);
 				const email = new SendMail(EMAIL,EP);

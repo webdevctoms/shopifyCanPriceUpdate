@@ -1,26 +1,3 @@
-function getEndIndex(productArr,compareKey){
-	let finalIndex = 0;
-	for(let i = 0;i < productArr.length;i++){
-		finalIndex += productArr[i][compareKey].length - 1;
-	}
-
-	return finalIndex;
-}
-
-function getStartIndex(productArr,compareKey){
-	let startIndex = 0;
-	for(let i = 0;i < productArr.length;i++){
-		if(productArr[i][compareKey].length === 1 && productArr[i][compareKey][0].sku === ''){
-			startIndex = i;
-		}
-		else{
-			break;
-		}
-	}
-
-	return startIndex + 1;
-}
-
 function convertPrice(price){
 	let adjustedPrice = price.replace(',','');
 	if(!adjustedPrice.includes('.')){
@@ -29,13 +6,14 @@ function convertPrice(price){
 
 	return adjustedPrice;
 }
-
+/*
 function buildVariants(product,variantIndex,newPrice){
 	let variants = [];
 
 	for(let i = 0;i < product.variants.length;i++){
 		let variant = {};
 		variant.id = product.variants[i].id;
+		variant.sku = product.variants[i].sku;
 		if(i === variantIndex){
 			variant.price = newPrice;
 		}
@@ -47,20 +25,94 @@ function buildVariants(product,variantIndex,newPrice){
 
 	return variants;
 }
+*/
+function checkVariantLength(variants,shopifyVariants){
+	let notFoundIndexes = [];
+	if(variants.length !== shopifyVariants.length){
+		for(let i = 0;i < shopifyVariants.length;i++){
+			let foundVariant = false;
+			for(let k = 0;k < variants.length;k++){
+				if(variants[k].id === shopifyVariants[i].id){
+					foundVariant = true;
+					continue;
+				}
+			}
+			if(!foundVariant){
+				notFoundIndexes.push(i);
+			}
+		}
+		//console.log('notFoundIndexes===================',notFoundIndexes,shopifyVariants[0].sku);
+		if(notFoundIndexes.length > 0){
+			for(let i = 0;i < notFoundIndexes.length;i++){
+				let missingVariant = buildVariant(shopifyVariants[notFoundIndexes[i]],shopifyVariants[notFoundIndexes[i]].price);
+				variants.push(missingVariant);
+			}
+		}
+		//console.log('varaints after fix: ',variants);
+	}
+
+	return variants;
+}
+
+function buildVariant(variant,newPrice){
+	let newVariant = {};
+
+	newVariant.id = variant.id;
+	//newVariant.sku = variant.sku;
+	newVariant.price = newPrice;
+
+	return newVariant
+}
 
 function convertToShopifyData(csvData,shopifyData,priceData){
 	let updateData = [];
-
+	let currentShopifyIndex = priceData[0].shopifyIndex;
+	let productData = {};
+	let variants = [];
 	for(let i = 0;i < priceData.length;i++){
-		const currentProduct = shopifyData[priceData[i].shopifyIndex];
-		let productData = {};
-		let variants = buildVariants(currentProduct,priceData[i].variantIndex,priceData[i].csvPrice); 
-		productData.product_id = currentProduct.id;
-		productData.variants = variants;
-		updateData.push(productData);
+		if(priceData[i].shopifyIndex !== currentShopifyIndex){
+			productData.product_id = shopifyData[currentShopifyIndex].id;
+			variants = checkVariantLength(variants,shopifyData[currentShopifyIndex].variants);
+			productData.variants = variants;	
+
+			currentShopifyIndex = priceData[i].shopifyIndex;
+			updateData.push(productData);
+			productData = {};
+			variants = [];
+		}
+
+		const currentProduct = shopifyData[currentShopifyIndex];
+		let currentVariant = currentProduct.variants[priceData[i].variantIndex];
+		let newPrice = currentVariant.price !== priceData[i].csvPrice ? priceData[i].csvPrice : currentVariant.price
+		let variant = buildVariant(currentVariant,newPrice);
+		variants.push(variant);
+		//let variants = buildVariants(currentProduct,priceData[i].variantIndex,priceData[i].csvPrice); 
+		//updateData.push(productData);
 	}
 
 	return updateData;
+}
+//final check to make sure variant lengths match
+function finalLengthCheck(updateData,shopifyData){
+	let foundCount = 0;
+	for(let i = 0;i < updateData.length;i++){
+		for(let k = 0;k < shopifyData.length;k++){
+			if(updateData[i].product_id === shopifyData[k].id){
+				foundCount++;
+				if(updateData[i].variants.length !== shopifyData[k].variants.length){
+					console.log('===error length===: ',updateData[i])
+					return false;
+				}
+			}
+		}
+	}
+
+	if(foundCount !== updateData.length){
+		console.log('===error foundCount===: ',updateData.length,foundCount);
+		return false;
+	}
+
+	return true;
 }
 
 //compare csv data to shopify data
@@ -94,10 +146,17 @@ function compareCSVData(csvArr,productArr,compareIndex,priceIndex,compareKey){
 			}
 		}
 	}
-	console.log('===========price differnces:',priceData.length);
+	
 	let updateData = convertToShopifyData(csvArr,productArr,priceData);
-
-	return updateData;
+	let lengthCheck = finalLengthCheck(updateData,productArr);
+	console.log('===========price differnces:',updateData.length,lengthCheck);
+	if(lengthCheck){
+		return updateData;
+	}
+	else{
+		return null;
+	}
+	
 }
 
 module.exports = {compareCSVData};

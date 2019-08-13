@@ -10,7 +10,6 @@ function SaveToShopify(productData,url,user_k,user_p){
 SaveToShopify.prototype.saveData = function(productIndex) {
 	var promise = new Promise((resolve,reject) => {
 		let productID = this.productData[productIndex].product_id ? this.productData[productIndex].product_id:this.productData[productIndex].id;
-		//let productID = 2063102705757;
 		let newUrl = this.url + "products/" + productID + ".json";
 		console.log(newUrl);
 		const authKey = Buffer.from(this.user_k + ":" + this.user_p).toString('base64');
@@ -33,7 +32,7 @@ SaveToShopify.prototype.saveData = function(productIndex) {
 			}
 			//console.log(body);
 			//let parsedBody = JSON.parse(body);
-			let title = this.productData[productIndex].product_title ? this.productData[productIndex].product_title : this.productData[productIndex].title;
+			let title = this.productData[0].product_title ? this.productData[0].product_title : this.productData[0].title;
 			console.log("===============PUT data: ",productIndex,this.productData.length,title);
 			if(productIndex < this.productData.length - 1){
 				resolve(this.saveData(productIndex + 1));

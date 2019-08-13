@@ -30,7 +30,8 @@ CompareData.prototype.compareInnerObject = function(shopifyData,productData,arra
 			//model title is the key for the db object(variant_data)
 			if(!currentKey.includes('model_title')){
 				if(productData[i][currentKey] != shopifyData[i][shopifyKey]){
-					console.log('===================found error=====================',productData[i][currentKey],shopifyData[i][shopifyKey],i,shopifyData[i]);
+					console.log('error key: ',currentKey,shopifyKey,productData[i][currentKey],shopifyData[i][shopifyKey],i);
+					console.log('===================found error=====================',productData[i],shopifyData[i]);
 					errorData[currentKey] = {
 						item_code:productData[i].item_code,
 						product_id:shopifyData[i].product_id

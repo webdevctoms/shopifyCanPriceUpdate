@@ -4,9 +4,10 @@ const {checkKey} = require("../tools/checkKey");
 const {checkFields} = require("../tools/checkFields");
 const {convertData} = require("../tools/convertData");
 const {Prices} = require('../models/priceModel');
-const {URLCAD,USERKC,USERPC} = require('../config');
+const {URLCAD,USERKC,USERPC,EMAIL,EP,SENDEMAIL} = require('../config');
 const {GetData} = require('../classes/getData');
 const {SaveDB} = require('../classes/saveDB');
+const {SendMail} = require('../classes/sendMail');
 const {SaveToShopify} = require('../classes/saveToShopify');
 
 //copy data to db
@@ -14,6 +15,7 @@ router.post('/copy',checkKey,checkFields,(req,res)=>{
 	const fields = req.body.fields;
 	const newUrl = req.newUrl;
 	const getData = new GetData(newUrl,USERKC,USERPC,fields);
+	const email = new SendMail(EMAIL,EP);
 	return getData.getData([],1)
 
 	.then(data => {
@@ -38,10 +40,15 @@ router.post('/copy',checkKey,checkFields,(req,res)=>{
 	})
 
 	.then(data => {
+		console.log('done saving',data);
+		return email.send('test@email.com',SENDEMAIL,'Copy Data','<b>Done Copying data</b>')
+	})
+
+	.then(data => {
 		console.log('done saving');
 		res.json({
 			status:200,
-			data
+			message:'done saving email sent'
 		});
 	})
 
@@ -55,7 +62,7 @@ router.post('/copy',checkKey,checkFields,(req,res)=>{
 });
 //save from backup
 router.get('/backup',checkKey,(req,res)=>{
-	
+	const email = new SendMail(EMAIL,EP);
 	return Prices.find({})
 
 	.then(priceData => {
@@ -70,9 +77,15 @@ router.get('/backup',checkKey,(req,res)=>{
 	})
 
 	.then(data => {
+		console.log('done saving: ',data);
+		return email.send('test@email.com',SENDEMAIL,'Save Data','<b>Done saving data to Shopify</b>')
+	})
+
+	.then(data => {
+		console.log('done saving');
 		res.json({
 			status:200,
-			data
+			message:'done saving to shopify email sent'
 		});
 	})
 
